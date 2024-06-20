@@ -7,15 +7,19 @@ format:
     nav-buttons: 
       - github
       - href: https://github.com/thisisnic/arrowdash/
-jupyter: python3
 ---
 
-<!-- 
 
-Needs Quarto 1.4 installed to run
-Seek inspiration from https://quarto.org/docs/dashboards/examples/
+```{r}
+#| label: update
+#| include: false
+library(reticulate)
+reticulate::use_virtualenv('r-arrow-dash')
+library(DT)
+update_time <- format(Sys.time(), "%a %b %d %X %Y %z")
+```
 
--->
+Last updated: `{r} update_time`
 
 ```{python}
 #| label: main methods
@@ -99,156 +103,27 @@ dict(
 ### Column {width=50%}
 
 ```{python}
+print(r_issues_open)
+```
+
+```{r}
+test <- py$r_issues_open
+head(test)
+```
+
+```{r}
+#| eval: true
 #| title: List of issues not yet closed
-from itables import show
-from itables import options
-options.buttons = ['copy', 'excel', 'pdf']
-show(p_issues_open)
-```
+# datatable(
+#   py$p_issues_open, extensions = 'Buttons', options = list(
+#     dom = 'Bfrtip',
+#     buttons = c('copy', 'csv', 'excel')
+#   )
+# )
 
-### Column {width=50%}
-
-```{python}
-#| title: List of Pull Requests not yet merged
-show(p_prs_open)
-```
-
-## Row
-
-### Column {width=50%}
-
-```{python}
-#| title: List of open issues by new contributors
-show(p_issues_new_open)
-```
-
-### Column {width=50%}
-
-```{python}
-#| title: List of open Pull Requests by new contributors
-show(p_prs_new_open)
-```
-
-## Row
-
-### Column {width=50%}
-
-```{python}
-#| title: Open issues by week
-import altair as alt
-
-alt.Chart(p_issues_sum).mark_bar(cornerRadius=10).encode(
-    x=alt.X("created_at:N").axis(labelAngle=-45).title("Week"),
-    y=alt.Y("labels:Q").title("Number of issues")
-)
-```
-
-### Column {width=50%}
-
-```{python}
-#| title: Open prs by week
-alt.Chart(p_prs_sum).mark_bar(cornerRadius=10).encode(
-    x=alt.X("created_at:N").axis(labelAngle=-45).title("Week"),
-    y=alt.Y("labels:Q").title("Number of prs")
-)
-```
-
-# Arrow R
-
-Issues, issues not yet closed (open issues) and pull requests created in the last 3 months. TODO: Questions?
-
-## Row
-
-```{python}
-#| content: valuebox
-#| title: "All Issues"
-dict(
-  icon = "envelope",
-  color = "light",
-  value = len(r_issues)
-)
-```
-
-```{python}
-#| content: valuebox
-#| title: "Open Issues"
-dict(
-  icon = "envelope-open",
-  color = "light",
-  value = len(r_issues_open)
-)
-```
-
-```{python}
-#| content: valuebox
-#| title: "All Pull Requests"
-dict(
-  icon = "code-square",
-  color = "light",
-  value = len(r_prs_open)
-)
-```
-
-```{python}
-#| content: valuebox
-#| title: "Stack Overflow Questions"
-dict(
-  icon = "question-circle",
-  color = "light",
-  value = "2"
-)
-```
-
-## Row
-
-### Column {width=50%}
-
-```{python}
-#| title: List of issues not yet closed
-show(r_issues_open)
-```
-
-### Column {width=50%}
-
-```{python}
-#| title: List of Pull Requests not yet merged
-show(r_prs_open)
-```
-
-## Row
-
-### Column {width=50%}
-
-```{python}
-#| title: List of open issues by new contributors
-show(r_issues_new_open)
-```
-
-### Column {width=50%}
-
-```{python}
-#| title: List of open Pull Requests by new contributors
-show(r_prs_new_open)
-```
-
-## Row
-
-### Column {width=50%}
-
-```{python}
-#| title: Open issues by week
-alt.Chart(r_issues_sum).mark_bar(cornerRadius=10).encode(
-    x=alt.X("created_at:N").axis(labelAngle=-45).title("Week"),
-    y=alt.Y("labels:Q").title("Number of issues")
-)
-```
-
-### Column {width=50%}
-
-```{python}
-#| title: Open prs by week
-alt.Chart(r_prs_sum).mark_bar(cornerRadius=10).encode(
-    x=alt.X("created_at:N").axis(labelAngle=-45).title("Week"),
-    y=alt.Y("labels:Q").title("Number of prs")
-)
+# DT::datatable(r_issues_open)
+# df <- data.frame(first_column = py$r_issues_open[, 1],
+#                  second_column = py$r_issues_open[, 2]
+#                  )
+head(test[, 2])
 ```
